@@ -43,10 +43,12 @@
   - Middleware for route protection
   - CSRF protection built-in
 
-- **Database**: PostgreSQL 15+
+- **Database**: PostgreSQL 14.20 (Homebrew)
 
   - ACID-compliant relational database
-  - Hosted on Vercel Postgres or Supabase
+  - Local development setup on port 5432
+  - User: thiagoricci
+  - Database name: property_maintenance
   - Connection pooling via Prisma
 
 - **ORM**: Prisma 5+

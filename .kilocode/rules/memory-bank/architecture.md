@@ -133,6 +133,15 @@ property-maintenance/
 - Easy to switch databases if needed
 - Excellent TypeScript integration
 
+**Current Setup**:
+
+- PostgreSQL 14.20 (Homebrew)
+- Local development on port 5432
+- User: thiagoricci
+- Database name: property_maintenance
+- Connection string: `postgresql://thiagoricci@localhost:5432/property_maintenance`
+- Tables created: User, MaintenanceRequest
+
 **Schema Design**:
 
 - User model with email, name, hashed password
