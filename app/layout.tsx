@@ -7,8 +7,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Property Maintenance AI",
-  description: "AI-powered property maintenance analysis",
+  title: "AI Property Maintenance - Smart Maintenance Analysis for Property Managers",
+  description: "Get instant AI-powered maintenance analysis, cost estimates, and contractor recommendations for your property. Streamline your property maintenance workflow with intelligent diagnostics.",
 };
 
 export default function RootLayout({
