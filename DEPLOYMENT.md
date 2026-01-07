@@ -227,6 +227,24 @@ npm run build
 3. Check for missing environment variables
 4. Try redeploying from Vercel dashboard
 
+### Build Error: Failed to collect page data for /api/auth/[...nextauth]
+
+**Issue**: Build fails with error "Failed to collect page data for /api/auth/[...nextauth]"
+
+**Cause**: Unused import in middleware.ts that causes circular dependency during build
+
+**Solution**: Ensure middleware.ts only imports what it needs. The middleware should only use `getToken` from `next-auth/jwt`, not `authOptions` from `@/lib/auth`.
+
+**Fixed in version**: The middleware.ts file has been corrected to remove the unused import. If you encounter this error, verify that middleware.ts only contains:
+
+```typescript
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
+```
+
+Do NOT import `authOptions` or other database-related code in middleware, as this causes build-time issues.
+
 ## Monitoring
 
 ### Vercel Analytics
