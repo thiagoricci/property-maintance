@@ -9,7 +9,7 @@ import { authOptions } from "@/lib/auth";
  */
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // 1. Validate session
@@ -24,8 +24,8 @@ export async function GET(
       );
     }
 
-    // 2. Extract request ID from params
-    const requestId = params.id;
+    // 2. Extract request ID from params (await in Next.js 15)
+    const { id: requestId } = await params;
 
     if (!requestId) {
       return NextResponse.json(
@@ -106,7 +106,7 @@ export async function GET(
  */
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // 1. Validate session
@@ -121,8 +121,8 @@ export async function DELETE(
       );
     }
 
-    // 2. Extract request ID from params
-    const requestId = params.id;
+    // 2. Extract request ID from params (await in Next.js 15)
+    const { id: requestId } = await params;
 
     if (!requestId) {
       return NextResponse.json(
