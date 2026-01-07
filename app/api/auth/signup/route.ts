@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
@@ -16,6 +15,9 @@ export async function POST(request: NextRequest) {
 
     // Validate input
     const validatedData = signupSchema.parse(body);
+
+    // Lazy load Prisma to avoid initialization during build
+    const { prisma } = await import("@/lib/prisma");
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({

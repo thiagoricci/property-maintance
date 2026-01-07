@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/maintenance/[id]
@@ -38,14 +37,17 @@ export async function GET(
       );
     }
 
-    // 3. Fetch request from database
+    // 3. Lazy load Prisma to avoid initialization during build
+    const { prisma } = await import("@/lib/prisma");
+
+    // 4. Fetch request from database
     const request = await prisma.maintenanceRequest.findUnique({
       where: {
         id: requestId,
       },
     });
 
-    // 4. Check if request exists
+    // 5. Check if request exists
     if (!request) {
       return NextResponse.json(
         {
@@ -56,7 +58,7 @@ export async function GET(
       );
     }
 
-    // 5. Verify user owns the request (security check)
+    // 6. Verify user owns the request (security check)
     if (request.userId !== session.user.id) {
       return NextResponse.json(
         {
@@ -67,7 +69,7 @@ export async function GET(
       );
     }
 
-    // 6. Return success response
+    // 7. Return success response
     return NextResponse.json({
       success: true,
       data: request,
@@ -132,14 +134,17 @@ export async function DELETE(
       );
     }
 
-    // 3. Fetch request to verify ownership
+    // 3. Lazy load Prisma to avoid initialization during build
+    const { prisma } = await import("@/lib/prisma");
+
+    // 4. Fetch request to verify ownership
     const existingRequest = await prisma.maintenanceRequest.findUnique({
       where: {
         id: requestId,
       },
     });
 
-    // 4. Check if request exists
+    // 5. Check if request exists
     if (!existingRequest) {
       return NextResponse.json(
         {
@@ -150,7 +155,7 @@ export async function DELETE(
       );
     }
 
-    // 5. Verify user owns the request (security check)
+    // 6. Verify user owns the request (security check)
     if (existingRequest.userId !== session.user.id) {
       return NextResponse.json(
         {
@@ -161,14 +166,14 @@ export async function DELETE(
       );
     }
 
-    // 6. Delete the request
+    // 7. Delete the request
     await prisma.maintenanceRequest.delete({
       where: {
         id: requestId,
       },
     });
 
-    // 7. Return success response
+    // 8. Return success response
     return NextResponse.json({
       success: true,
       message: "Request deleted successfully.",

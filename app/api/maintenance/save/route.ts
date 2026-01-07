@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 
 /**
  * POST /api/maintenance/save
@@ -51,7 +50,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. Save to database
+    // 5. Lazy load Prisma to avoid initialization during build
+    const { prisma } = await import("@/lib/prisma");
+
+    // 6. Save to database
     const savedRequest = await prisma.maintenanceRequest.create({
       data: {
         userId: session.user.id,

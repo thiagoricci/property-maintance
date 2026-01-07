@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/maintenance/list
@@ -44,7 +43,10 @@ export async function GET(request: Request) {
     // 4. Calculate pagination
     const skip = (page - 1) * limit;
 
-    // 5. Fetch requests from database
+    // 5. Lazy load Prisma to avoid initialization during build
+    const { prisma } = await import("@/lib/prisma");
+
+    // 6. Fetch requests from database
     const [requests, totalCount] = await Promise.all([
       prisma.maintenanceRequest.findMany({
         where,
