@@ -35,7 +35,7 @@ The AI-Assisted Property Maintenance Tool follows a modern full-stack web archit
 
 ## Source Code Paths
 
-Planned directory structure (to be created during Phase 1):
+Actual directory structure (completed during Phase 1-5):
 
 ```
 property-maintenance/
@@ -43,8 +43,9 @@ property-maintenance/
 │   ├── (auth)/                   # Auth route group
 │   │   ├── login/
 │   │   │   └── page.tsx
-│   │   └── signup/
-│   │       └── page.tsx
+│   │   ├── signup/
+│   │   │   └── page.tsx
+│   │   └── login-page.tsx        # Legacy login component
 │   ├── (dashboard)/              # Protected dashboard routes
 │   │   ├── dashboard/
 │   │   │   └── page.tsx
@@ -53,38 +54,62 @@ property-maintenance/
 │   │   │   │   └── page.tsx
 │   │   │   └── [id]/
 │   │   │       └── page.tsx
+│   │   ├── analysis/
+│   │   │   └── page.tsx
 │   │   └── layout.tsx            # Dashboard layout with header
 │   ├── api/                      # API routes
 │   │   ├── auth/
-│   │   │   ├── signup/route.ts
-│   │   │   └── signin/route.ts
+│   │   │   ├── [...nextauth]/
+│   │   │   │   └── route.ts
+│   │   │   └── signup/
+│   │   │       └── route.ts
 │   │   └── maintenance/
 │   │       ├── analyze/route.ts
 │   │       ├── save/route.ts
 │   │       ├── list/route.ts
 │   │       └── [id]/route.ts
 │   ├── layout.tsx                # Root layout
-│   └── page.tsx                  # Homepage
+│   ├── page.tsx                  # Homepage
+│   └── globals.css               # Global styles
 ├── components/                   # Reusable UI components
-│   ├── ui/                       # Base UI components (buttons, inputs, etc.)
-│   ├── auth/                     # Auth-specific components
-│   ├── dashboard/                # Dashboard components
-│   └── maintenance/              # Maintenance request components
+│   ├── ui/                       # Base UI components
+│   │   ├── alert.tsx
+│   │   ├── badge.tsx
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── error-boundary.tsx
+│   │   ├── index.ts
+│   │   ├── input.tsx
+│   │   ├── loading-spinner.tsx
+│   │   ├── modal.tsx
+│   │   ├── password-strength-indicator.tsx
+│   │   ├── skeleton-card.tsx
+│   │   ├── skeleton-text.tsx
+│   │   ├── toast-provider.tsx
+│   │   └── toast.tsx
+│   └── providers.tsx             # React providers
 ├── lib/                          # Utility functions and configurations
 │   ├── auth.ts                   # NextAuth configuration
+│   ├── db.ts                     # Database connection utilities
 │   ├── prisma.ts                 # Prisma client singleton
-│   ├── ai/                       # AI-related utilities
+│   ├── ai.ts                     # AI integration utilities
+│   ├── ai/
 │   │   └── prompts.ts            # AI system prompts
-│   └── validations.ts           # Input validation schemas
+│   ├── validations.ts             # Input validation schemas
+│   └── hooks/
+│       └── use-password-strength.ts
 ├── prisma/
 │   ├── schema.prisma             # Database schema
 │   └── migrations/              # Database migrations
 ├── public/                       # Static assets
+│   └── favicon.ico              # Browser tab icon
 ├── middleware.ts                 # Route protection middleware
 ├── next.config.mjs               # Next.js configuration
 ├── tailwind.config.ts            # Tailwind CSS configuration
 ├── tsconfig.json                 # TypeScript configuration
-└── package.json                   # Dependencies and scripts
+├── postcss.config.js             # PostCSS configuration
+├── package.json                 # Dependencies and scripts
+└── .env.example                 # Environment variables template
 ```
 
 ## Key Technical Decisions
@@ -426,7 +451,44 @@ Dashboard → Request List (filtered) → Click Request → Request Detail View
 
 ## Known Technical Debt
 
-None at this stage (pre-development).
+### Resolved Issues
+
+1. **Prisma Build Initialization Error (Resolved - January 7, 2026)**
+   - **Issue**: Prisma Client imported at top level in API routes caused build failures on Vercel
+   - **Fix**: Changed to lazy imports using `const { prisma } = await import("@/lib/prisma")`
+   - **Impact**: Build now completes successfully on Vercel
+   - **Files Modified**: All API routes using Prisma
+
+### Current Technical Debt
+
+1. **No Automated Testing**
+
+   - No unit tests, integration tests, or E2E tests
+   - **Priority**: Medium (post-MVP)
+   - **Plan**: Add Jest for unit tests, Playwright for E2E tests
+
+2. **Limited Error Tracking**
+
+   - No centralized error logging or monitoring
+   - **Priority**: Medium (post-MVP)
+   - **Plan**: Integrate Sentry or similar error tracking service
+
+3. **No Analytics**
+
+   - No user behavior analytics or usage metrics
+   - **Priority**: Low (post-MVP)
+   - **Plan**: Add Google Analytics or Vercel Analytics
+
+4. **Basic Rate Limiting**
+
+   - Simple IP-based rate limiting without sophisticated protection
+   - **Priority**: Low (post-MVP)
+   - **Plan**: Implement Redis-based rate limiting with user quotas
+
+5. **No Background Job Processing**
+   - All AI analysis happens synchronously in API routes
+   - **Priority**: Low (post-MVP)
+   - **Plan**: Add queue system for long-running tasks
 
 ## Notes
 
@@ -434,3 +496,5 @@ None at this stage (pre-development).
 - Focus on simplicity over complex patterns
 - Prioritize developer experience and maintainability
 - Document patterns as they emerge during development
+- All critical build issues resolved
+- Application is production-ready for MVP launch

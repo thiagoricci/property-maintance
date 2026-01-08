@@ -3,7 +3,7 @@ import { z } from "zod";
 export const maintenanceRequestSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters").max(2000),
   propertyAddress: z.string().optional(),
-  category: z.enum(["Plumbing", "Electrical", "HVAC", "Structural", "Other"]).optional(),
+  category: z.enum(["Plumbing", "Electrical", "HVAC", "Structural", "Other"]).optional().or(z.literal("")),
 });
 
 export const signupSchema = z.object({
