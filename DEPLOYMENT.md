@@ -227,6 +227,29 @@ npm run build
 3. Check for missing environment variables
 4. Try redeploying from Vercel dashboard
 
+### Prisma Client Initialization Error on Vercel
+
+**Issue**: Error: "Prisma has detected that this project was built on Vercel, which caches dependencies. This leads to an outdated Prisma Client because Prisma's auto-generation isn't triggered."
+
+**Cause**: Vercel caches dependencies between builds, and Prisma Client needs to be regenerated during the build process to ensure it's compatible with the current database schema.
+
+**Solution**: The build script in package.json has been updated to include `prisma generate`:
+
+```json
+"scripts": {
+  "build": "prisma generate && next build"
+}
+```
+
+This ensures that Prisma Client is regenerated during every build on Vercel, preventing initialization errors.
+
+**If you still encounter this error**:
+
+1. Verify package.json contains the updated build script
+2. Clear Vercel build cache: Go to Vercel Dashboard > Settings > Git > Build Cache > Clear
+3. Redeploy from Vercel dashboard
+4. Check that `prisma generate` appears in the build logs
+
 ### Build Error: Failed to collect page data for /api/auth/[...nextauth]
 
 **Issue**: Build fails with error "Failed to collect page data for /api/auth/[...nextauth]"
